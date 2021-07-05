@@ -2,25 +2,21 @@ import { dbService } from "my_firebase";
 import React, { useEffect, useState } from "react";
 
 const Home = ({ userObj }) => {
-  console.log(userObj);
   const [tweet, setTweet] = useState("");
-  const [tweets, setTweets] = useState([]);
-  const getTweets = async () => {
-    const dbtweets = await dbService.collection("tweets").get();
-    dbtweets.forEach((document) => {
-      const tweetObject = {
-        ...document.data(),
-        id: document.id,
-      };
-      setTweets((prev) => [tweetObject, ...prev]);
-      // console.log(tweetObject.tweet);
-      // if you give a function to your setValue
-      // react will return the previous value
-    });
-  };
+  const [tweetList, setTweetList] = useState([]);
 
   useEffect(() => {
-    getTweets();
+    dbService
+      .collection("tweets")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((snapshot) => {
+        const tweetArray = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setTweetList(tweetArray);
+        console.log(tweetArray);
+      });
   }, []);
 
   const onSubmit = async (event) => {
@@ -32,6 +28,7 @@ const Home = ({ userObj }) => {
     });
     setTweet("");
   };
+
   const onChange = (event) => {
     const {
       target: { value },
@@ -52,9 +49,9 @@ const Home = ({ userObj }) => {
         <input type="submit" value="Tweet" />
       </form>
       <div>
-        {tweets.map((tweet) => (
+        {tweetList.map((tweet) => (
           <div key={tweet.id}>
-            <h5>{tweet.tweet}</h5>
+            <h5>{tweet.text}</h5>
           </div>
         ))}
       </div>
