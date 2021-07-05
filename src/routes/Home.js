@@ -1,24 +1,26 @@
 import { dbService } from "my_firebase";
 import React, { useEffect, useState } from "react";
+import Tweet from "components/Tweet";
 
 const Home = ({ userObj }) => {
   const [tweet, setTweet] = useState("");
   const [tweetList, setTweetList] = useState([]);
 
+  // componentDidMount
   useEffect(() => {
     dbService
-      .collection("tweets")
-      .orderBy("createdAt", "desc")
+      .collection("tweets") // from
+      .orderBy("createdAt", "desc") // order by
       .onSnapshot((snapshot) => {
         const tweetArray = snapshot.docs.map((doc) => ({
-          id: doc.id,
+          id: doc.id, // add doc.id
           ...doc.data(),
         }));
-        setTweetList(tweetArray);
-        console.log(tweetArray);
+        setTweetList(tweetArray); // update tweetList
       });
   }, []);
 
+  // add data to db which I inputed data
   const onSubmit = async (event) => {
     event.preventDefault();
     await dbService.collection("tweets").add({
@@ -26,9 +28,10 @@ const Home = ({ userObj }) => {
       createdAt: Date.now(),
       creatorId: userObj.uid,
     });
-    setTweet("");
+    setTweet(""); // clear the input
   };
 
+  // if value changed update current value
   const onChange = (event) => {
     const {
       target: { value },
@@ -36,10 +39,12 @@ const Home = ({ userObj }) => {
 
     setTweet(value);
   };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
         <input
+          name={tweet}
           value={tweet}
           onChange={onChange}
           type="text"
@@ -49,10 +54,12 @@ const Home = ({ userObj }) => {
         <input type="submit" value="Tweet" />
       </form>
       <div>
-        {tweetList.map((tweet) => (
-          <div key={tweet.id}>
-            <h5>{tweet.text}</h5>
-          </div>
+        {tweetList.map((element) => (
+          <Tweet
+            key={element.id}
+            tweetObj={element}
+            isOwner={element.creatorId === userObj.uid}
+          />
         ))}
       </div>
     </div>
