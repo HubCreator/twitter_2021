@@ -12,6 +12,7 @@ const Home = ({ userObj }) => {
       .collection("tweets") // from
       .orderBy("createdAt", "desc") // order by
       .onSnapshot((snapshot) => {
+        // when something happen in your db it notifies
         const tweetArray = snapshot.docs.map((doc) => ({
           id: doc.id, // add doc.id
           ...doc.data(),
@@ -58,7 +59,7 @@ const Home = ({ userObj }) => {
           <Tweet
             key={element.id}
             tweetObj={element}
-            isOwner={element.creatorId === userObj.uid}
+            isOwner={element.creatorId === userObj.uid} // it returns true or false
           />
         ))}
       </div>

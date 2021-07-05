@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AppRouter from "components/Router";
 import { authService } from "my_firebase";
+// import "css/styles.css";
 
 function App() {
   const [init, setInit] = useState(false);
@@ -9,6 +10,7 @@ function App() {
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
+      //it happens when you log in or log out automatically
       if (user) {
         setIsLoggedIn(true);
         setUserObj(user);
