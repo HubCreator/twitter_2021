@@ -5,6 +5,7 @@ import Tweet from "components/Tweet";
 const Home = ({ userObj }) => {
   const [tweet, setTweet] = useState("");
   const [tweetList, setTweetList] = useState([]);
+  const [fileString, setFileString] = useState();
 
   // componentDidMount
   useEffect(() => {
@@ -41,6 +42,27 @@ const Home = ({ userObj }) => {
     setTweet(value);
   };
 
+  const onFileChange = (event) => {
+    const {
+      target: { files },
+    } = event;
+    const targetFile = files[0]; // get the file
+    const reader = new FileReader(); // create a reader
+    reader.onloadend = (finishedEvent) => {
+      // add event listener to the reader when it's finished loading the file
+      console.log(finishedEvent);
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setFileString(result);
+    };
+    reader.readAsDataURL(targetFile);
+  };
+
+  const onClearPhotoClicked = () => {
+    setFileString();
+  };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -52,7 +74,14 @@ const Home = ({ userObj }) => {
           placeholder="what the hack?"
           maxLength={120}
         />
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Tweet" />
+        {fileString && (
+          <div>
+            <img src={fileString} width="50px" height="50px" />
+            <button onClick={onClearPhotoClicked}>Clear</button>
+          </div>
+        )}
       </form>
       <div>
         {tweetList.map((element) => (
