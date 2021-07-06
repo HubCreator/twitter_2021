@@ -2,7 +2,7 @@ import { authService, dbService } from "my_firebase";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-const Profile = ({ userObj }) => {
+const Profile = ({ refreshUser, userObj }) => {
   const [updateName, setUpdateName] = useState(userObj.displayName);
   const history = useHistory();
 
@@ -34,10 +34,11 @@ const Profile = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    if (updateName !== userObj.displayName) {
+    if (userObj.displayName !== updateName) {
       await userObj.updateProfile({
         displayName: updateName,
       });
+      refreshUser();
     }
   };
 
