@@ -1,11 +1,12 @@
-import { dbService } from "my_firebase";
+import { dbService, storageService } from "my_firebase";
+import { v4 as uuidv4 } from "uuid";
 import React, { useEffect, useState } from "react";
 import Tweet from "components/Tweet";
 
 const Home = ({ userObj }) => {
   const [tweet, setTweet] = useState("");
   const [tweetList, setTweetList] = useState([]);
-  const [fileString, setFileString] = useState();
+  const [fileString, setFileString] = useState(""); // transform img file to string
 
   // componentDidMount
   useEffect(() => {
@@ -25,12 +26,25 @@ const Home = ({ userObj }) => {
   // add data to db which I inputed data
   const onSubmit = async (event) => {
     event.preventDefault();
-    await dbService.collection("tweets").add({
+    let fileStringUrl = "";
+    if (fileString !== "") {
+      const fileStringRef = storageService
+        .ref()
+        .child(`${userObj.uid}/${uuidv4()}`);
+      const response = await fileStringRef.putString(fileString, "data_url");
+      fileStringUrl = await response.ref.getDownloadURL();
+    }
+
+    const tweetObj = {
       text: tweet,
       createdAt: Date.now(),
       creatorId: userObj.uid,
-    });
+      fileStringUrl,
+    };
+
+    await dbService.collection("tweets").add(tweetObj);
     setTweet(""); // clear the input
+    setFileString("");
   };
 
   // if value changed update current value
@@ -76,13 +90,13 @@ const Home = ({ userObj }) => {
         />
         <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Tweet" />
-        {fileString && (
-          <div>
-            <img src={fileString} width="50px" height="50px" />
-            <button onClick={onClearPhotoClicked}>Clear</button>
-          </div>
-        )}
       </form>
+      {fileString && (
+        <div>
+          <img src={fileString} width="50px" height="50px" />
+          <button onClick={onClearPhotoClicked}>Clear</button>
+        </div>
+      )}
       <div>
         {tweetList.map((element) => (
           <Tweet
