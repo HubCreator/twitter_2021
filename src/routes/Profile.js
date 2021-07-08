@@ -11,8 +11,11 @@ const Profile = ({ refreshUser, userObj }) => {
   }, []);
 
   const onLogOutClick = () => {
-    authService.signOut();
-    history.push("/");
+    const check = window.confirm("Seriously?!?!?");
+    if (check) {
+      authService.signOut();
+      history.push("/");
+    }
   };
 
   const getMyTweets = async () => {
@@ -43,19 +46,25 @@ const Profile = ({ refreshUser, userObj }) => {
   };
 
   return (
-    <>
-      <form onSubmit={onSubmit}>
+    <div className="profile">
+      <form className="profile__form" onSubmit={onSubmit}>
         <input
+          className="profile__form__modify"
           name="name"
           value={updateName}
           type="text"
           placeholder="Display name"
           onChange={onChange}
         />
-        <input type="submit" placeholder="Update Profile" />
+        <span className="profile__form__submit" onClick={onSubmit}>
+          Update Profile
+        </span>
       </form>
-      <button onClick={onLogOutClick}>Log Out</button>
-    </>
+      <div className="profile__hr"></div>
+      <span className="profile__log-out" onClick={onLogOutClick}>
+        Log Out
+      </span>
+    </div>
   );
 };
 

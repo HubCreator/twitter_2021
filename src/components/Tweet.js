@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { dbService, storageService } from "my_firebase";
 import React, { useState } from "react";
 
@@ -36,34 +38,55 @@ const Tweet = ({ tweetObj, isOwner }) => {
   return (
     <div>
       {edit ? (
-        <form onSubmit={onSubmit}>
+        <form className="home-screen__modify" onSubmit={onSubmit}>
           <input
+            id="modify-tweet"
             type="text"
             placeholder="Edit your tweet"
             value={updateTweet}
             required
             onChange={editTweet}
           />
-          <input type="submit" value="Update Tweet" />
-          <button onClick={toggleEditing}>Cancel</button>
+          {/* <input id="modify-submit" type="submit" value="Update Tweet" />
+          <button id="modify-cancel" onClick={toggleEditing}>
+            Cancel
+          </button> */}
+          <span id="modify-submit" onClick={onSubmit}>
+            Update Tweet
+          </span>
+          <span id="modify-cancel" onClick={toggleEditing}>
+            Cancel
+          </span>
         </form>
       ) : (
         <>
-          <h5>{tweetObj.text}</h5>
-          {tweetObj.fileStringUrl && (
-            <img
-              src={tweetObj.fileStringUrl}
-              alt="img"
-              width="50px"
-              height="50px"
-            />
-          )}
-          {isOwner && (
-            <>
-              <button onClick={onDeleteClick}>Delete Tweet</button>
-              <button onClick={toggleEditing}>Edit Tweet</button>
-            </>
-          )}
+          <h5 className="home-screen__tweet-list__text">{tweetObj.text}</h5>
+
+          <div className="home-screen__tweet-list__contents">
+            {tweetObj.fileStringUrl && (
+              <img
+                className="home-screen__tweet-list__contents__img"
+                src={tweetObj.fileStringUrl}
+                alt="img"
+                width="50px"
+                height="50px"
+              />
+            )}
+            {isOwner && (
+              <div className="home-screen__tweet-list__contents__tools">
+                <FontAwesomeIcon
+                  id="delete"
+                  icon={faTrash}
+                  onClick={onDeleteClick}
+                />
+                <FontAwesomeIcon
+                  id="modify"
+                  icon={faPencilAlt}
+                  onClick={toggleEditing}
+                />
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>
