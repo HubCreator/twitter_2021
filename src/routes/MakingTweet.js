@@ -19,16 +19,18 @@ const MakingTweet = ({ userObj }) => {
       const response = await fileStringRef.putString(fileString, "data_url");
       fileStringUrl = await response.ref.getDownloadURL();
     }
-    const tweetObj = {
-      text: tweet,
-      createdAt: Date.now(),
-      creatorId: userObj.uid,
-      fileStringUrl,
-    };
+    if (tweet !== "") {
+      const tweetObj = {
+        text: tweet,
+        createdAt: Date.now(),
+        creatorId: userObj.uid,
+        fileStringUrl,
+      };
 
-    await dbService.collection("tweets").add(tweetObj);
-    setTweet(""); // clear the input
-    setFileString("");
+      await dbService.collection("tweets").add(tweetObj);
+      setTweet(""); // clear the input
+      setFileString("");
+    }
   };
 
   // if value changed update current value

@@ -66,7 +66,7 @@ const AuthForm = () => {
       <span className="login-page__form__signin" onClick={toggleAccount}>
         {newAccount ? "Sign In" : "Create Account"}
       </span>
-      <div>{error}</div>
+      <div className="login-page__error-msg">{error}</div>
 
       <link
         rel="stylesheet"

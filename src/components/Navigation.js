@@ -10,10 +10,10 @@ const navigation = ({ userObj }) => (
         </Link>
       </li>
       <li className="nav-list">
-        <Link to="/profile">
+        <Link to="/profile" className="nav-list__profile">
           <i className="fas fa-user-edit"></i>
+          <span>{userObj.displayName}'s Profile</span>
         </Link>
-        <span>{userObj.displayName}'s Profile</span>
       </li>
     </ul>
     <link
